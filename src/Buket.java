@@ -9,4 +9,8 @@ public class Buket {
         this.name = name;
         this.price = price;
     }
+
+    public int getPrice() {
+        return this.price;
+    }
 }

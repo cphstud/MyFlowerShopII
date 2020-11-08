@@ -23,7 +23,16 @@ public class OrdreTest {
 
     @Test
     public void createOrderTest() {
-        Ordre ordre = new Ordre(buketter,phone);
+        Ordre ordre = new Ordre(phone,buketter);
+        assertNotNull(ordre);
+    }
+
+    @Test
+    public void calcPriceTest() {
+        Ordre ordre = new Ordre(phone,buketter);
+        int expected = 550;
+        int actual = ordre.calcPrice();
+        assertEquals(expected,actual);
     }
 
 }
