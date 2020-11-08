@@ -7,6 +7,7 @@ public class Ordre {
     int phone;
     List<Buket> buketter;
     LocalDateTime ldt;
+    String status;
 
     public Ordre(int phone, List<Buket> buketter) {
         this.phone = phone;
@@ -14,6 +15,12 @@ public class Ordre {
         ldt = LocalDateTime.now();
         this.id = counter;
         counter++;
+        this.status = "OPRETTET";
+    }
+
+    public void setStatus(String status) {
+        // DOING, DONE
+        this.status = status;
     }
 
     public int calcPrice() {

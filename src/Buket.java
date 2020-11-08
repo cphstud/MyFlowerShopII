@@ -1,8 +1,8 @@
 //6,Multifarvet blomsterbuket,250
 public class Buket {
-    int id;
-    String name;
-    int price;
+    private int id;
+    private String name;
+    private int price;
 
     public Buket(int id, String name, int price) {
         this.id = id;
@@ -12,5 +12,14 @@ public class Buket {
 
     public int getPrice() {
         return this.price;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    @Override
+    public String toString() {
+        return "nr.:" + id + ", name='" + name + ", price=" + price;
     }
 }
