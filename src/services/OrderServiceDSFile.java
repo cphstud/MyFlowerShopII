@@ -2,10 +2,7 @@ package services;
 
 import domain.Ordre;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +80,32 @@ public class OrderServiceDSFile implements OrderServiceI{
             }
         }
         return ordres;
+    }
+
+    public void visStatistik() {
+        //0;32324512;@3@5@2@10@;1150;DONE
+        int[] statArr = new int[30];
+        String line = "";
+        File file = new File("resources/orders.csv");
+        try {
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            while((line = br.readLine()) != null) {
+                String[] lineArr = line.split(";");
+                String buketLine = lineArr[2];
+                String[] buketLineArr = buketLine.split("@");
+                for(int i=1;i<buketLineArr.length;i++) {
+                    statArr[Integer.valueOf(buketLineArr[i])]++;
+                }
+            }
+            br.close();
+            fr.close();
+            for(int i=0;i<statArr.length;i++) {
+                System.out.print("|"+statArr[i]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

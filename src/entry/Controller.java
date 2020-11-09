@@ -42,12 +42,12 @@ public class Controller {
             }
         }
     }
-
     private void exitProgram() {
         System.out.println("Farvel og tak");
     }
 
     private void visStatistik() {
+        orderServiceI.visStatistik();
     }
 
     public void visBestillinger() {
@@ -63,7 +63,6 @@ public class Controller {
         printMainAction();
     }
 
-
     private void retOrdre() {
         System.out.println("Hvilken kundes ordre?");
         int phone = sc.nextInt();
@@ -71,10 +70,6 @@ public class Controller {
         for (Ordre ordre:ordres ) {
             // TODO: ret evt buketter
         }
-    }
-
-
-    private void godkendOrdre() {
     }
 
     public void opretOrdre() {
@@ -124,7 +119,4 @@ public class Controller {
         System.out.println("6) vis statistik");
         System.out.println("9) afslut programmet");
     }
-
-    // Services
-
 }

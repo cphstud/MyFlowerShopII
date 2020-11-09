@@ -11,4 +11,5 @@ public interface OrderServiceI {
     public List<Ordre> getOrdersByPhone(int phone);
     public void arkiverOrdre(int id);
     public List<Ordre> getBestillinger();
+    public void visStatistik();
 }
