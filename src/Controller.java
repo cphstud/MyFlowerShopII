@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -17,39 +14,59 @@ public class Controller {
         bestillinger = new ArrayList<>();
     }
 
-
     public void runProgram() {
         int choice = 0;
         // kører et loop med main actions
         // vis main action - prompt for action
         printMainAction();
-        choice = sc.nextInt();
-        switch(choice) {
-            case 1: visBuketter();break;
-            case 2: opretOrdre();break;
-            case 3: godkendOrdre();break;
-            case 4: retOrdre();break;
-            case 5: arkiverOrdre();break;
-            case 6: visBestillinger();break;
-            case 7: visStatistik();break;
-            default:exitProgram();
+        while(choice!=9) {
+            choice = sc.nextInt();
+            switch(choice) {
+                case 1: visBuketter();break;
+                case 2: opretOrdre();break;
+                case 3: godkendOrdre();break;
+                case 4: retOrdre();break;
+                case 5: arkiverOrdre();break;
+                case 6: visBestillinger();break;
+                case 7: visStatistik();break;
+                default:exitProgram();
+            }
         }
     }
 
     private void exitProgram() {
+        System.out.println("Farvel og tak");
     }
 
     private void visStatistik() {
+
+
     }
 
-    private void visBestillinger() {
+    public void visBestillinger() {
+        for (Ordre o: bestillinger ) {
+            System.out.println(o.printToCsv());
+        }
     }
 
     private void arkiverOrdre() {
+        System.out.println("Hvilken ordre skal arkiveres?");
+        int ordreId = sc.nextInt();
+        Ordre ordre = getOrderById(ordreId);
+        ordre.setStatus("DONE");
+        writeOrderToFile(ordre);
     }
 
+
     private void retOrdre() {
+        System.out.println("Hvilken kundes ordre?");
+        int phone = sc.nextInt();
+        List<Ordre> ordres = getOrdersByPhone(phone);
+        for (Ordre ordre:ordres ) {
+            // TODO: ret evt buketter
+        }
     }
+
 
     private void godkendOrdre() {
     }
@@ -60,15 +77,19 @@ public class Controller {
         List<Buket> buketter = new ArrayList<>();
         int buketChoice=0;
         Buket tmpBuket = null;
-        while(buketChoice != 99) {
+        int buketNr = 0;
+        while(buketNr != 99) {
             System.out.println("Vælg buket");
-            int buketNr = sc.nextInt();
-            tmpBuket = getBuketById(buketNr);
-            buketter.add(tmpBuket);
+            buketNr = sc.nextInt();
+            if (buketNr != 99) {
+                tmpBuket = getBuketById(buketNr);
+                buketter.add(tmpBuket);
+            }
         }
         Ordre ordre = new Ordre(phone,buketter);
         System.out.println("Samlet pris:  " + ordre.calcPrice());
         System.out.println("Bekræft ordre:");
+        sc.nextLine();
         String conf = sc.nextLine();
         if (conf.toLowerCase().equals("ja")) {
             ordre.setStatus("DOING");
@@ -77,6 +98,7 @@ public class Controller {
         }
         bestillinger.add(ordre);
         // loop ind til buketter valgt
+        printMainAction();
     }
 
 
@@ -111,14 +133,46 @@ public class Controller {
             // fyld i fra filen
             // 5,Arranger selv bundt,225,123
             while((line = br.readLine())!= null) {
-               String[] lineArr = line.split(",");
-               buket = new Buket(Integer.valueOf(lineArr[0]),lineArr[1],Integer.valueOf(lineArr[2]));
-               bukets.add(buket);
+                String[] lineArr = line.split(",");
+                buket = new Buket(Integer.valueOf(lineArr[0]),lineArr[1],Integer.valueOf(lineArr[2]));
+                bukets.add(buket);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return bukets;
+    }
+
+    public void writeOrderToFile(Ordre ordre) {
+        ////0;212121;@3,Mix bundt med 7 stilke pastel hortensia,275@5,Arranger selv bundt,22513,Queen blomsterbuket,275@;775;DONE
+        if (ordre.getStatus().equals("CREATED")) {
+            File file = new File("resources/activeOrders.csv");
+            try {
+                FileWriter fw = new FileWriter(file,true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(ordre.printToCsv2());
+                bw.newLine();
+                ordre.setStatus("ACTIVE");
+                bw.close();
+                fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //write to active-file
+        } else {
+            File file = new File("resources/archivedOrders.csv");
+            try {
+                FileWriter fw = new FileWriter(file,true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(ordre.printToCsv2());
+                bw.newLine();
+                ordre.setStatus("DONE");
+                bw.close();
+                fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public Buket getBuketById(int buketNr) {
@@ -129,5 +183,26 @@ public class Controller {
             }
         }
         return retVal;
+    }
+
+    public Ordre getOrderById(int ordreId) {
+        Ordre retVal = null;
+        for (Ordre o: bestillinger ) {
+            if (o.getId() == ordreId){
+                retVal = o;
+            }
+        }
+        return retVal;
+
+    }
+
+    private List<Ordre> getOrdersByPhone(int phone) {
+        List<Ordre> ordres = new ArrayList<>();
+        for (Ordre o: bestillinger ) {
+            if (o.getPhone() == phone && o.getStatus().equals("CREATED")) {
+                ordres.add(o);
+            }
+        }
+        return ordres;
     }
 }

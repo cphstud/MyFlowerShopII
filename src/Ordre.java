@@ -18,9 +18,49 @@ public class Ordre {
         this.status = "OPRETTET";
     }
 
+    public int getId() {
+        return this.id;
+    }
+
+    public int getPhone() {
+        return this.phone;
+    }
+
     public void setStatus(String status) {
-        // DOING, DONE
+        // CREATED,INPROGRES,DONE,CANCELED
         this.status = status;
+    }
+    public String getStatus() {
+        return this.status;
+    }
+    public String printToCsv2() {
+        //0;212121;@3,Mix bundt med 7 stilke pastel hortensia,275@5,Arranger selv bundt,22513,Queen blomsterbuket,275@;775;DONE
+        String retVal = "";
+        retVal += id;
+        retVal += ";" + phone;
+        retVal += ";@";
+        for (Buket b : buketter) {
+            retVal += "@" + b.getId();
+        }
+        retVal += ";@";
+        retVal += ";" + calcPrice();
+        retVal += ";" + status;
+        return retVal;
+    }
+
+    public String printToCsv() {
+        //0;212121;@3,Mix bundt med 7 stilke pastel hortensia,275@5,Arranger selv bundt,22513,Queen blomsterbuket,275@;775;DONE
+        String retVal = "";
+        retVal += id;
+        retVal += ";" + phone;
+        retVal += ";@";
+        for (Buket b: buketter ) {
+            retVal += "@" + b.toString();
+        }
+        retVal += ";@";
+        retVal += ";" + calcPrice();
+        retVal += ";" + status;
+        return retVal;
     }
 
     public int calcPrice() {
