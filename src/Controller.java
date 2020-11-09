@@ -24,12 +24,11 @@ public class Controller {
             switch(choice) {
                 case 1: visBuketter();break;
                 case 2: opretOrdre();break;
-                case 3: godkendOrdre();break;
-                case 4: retOrdre();break;
-                case 5: arkiverOrdre();break;
-                case 6: visBestillinger();break;
-                case 7: visStatistik();break;
-                default:exitProgram();
+                case 3: retOrdre();break;
+                case 4: arkiverOrdre();break;
+                case 5: visBestillinger();break;
+                case 6: visStatistik();break;
+                default:choice=9;exitProgram();
             }
         }
     }
@@ -132,11 +131,10 @@ public class Controller {
     public void printMainAction() {
         System.out.println("1) vis buketter");
         System.out.println("2) opret ordre ");
-        System.out.println("3) godkend ordre");
-        System.out.println("4) ret ordre");
-        System.out.println("5) arkiver ordre");
-        System.out.println("6) vis alle bestillinger");
-        System.out.println("7) vis statistik");
+        System.out.println("3) ret ordre");
+        System.out.println("4) arkiver ordre");
+        System.out.println("5) vis alle bestillinger");
+        System.out.println("6) vis statistik");
         System.out.println("9) afslut programmet");
     }
 
