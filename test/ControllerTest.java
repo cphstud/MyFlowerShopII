@@ -48,14 +48,26 @@ public class ControllerTest {
     }
 
     @Test
-    public void visBestillinger() {
+    public void writeOrderToFile() {
         List<Buket> buketter = new ArrayList<>();
         Buket buket1 = new Buket(3,"Mix bundt med 7 stilke pastel hortensia",275);
         Buket buket2 = new Buket(5,"Queen blomsterbuket",275);
+        Buket buket3 = new Buket(2,"Max blomsterbuket",375);
+        Buket buket4 = new Buket(10,"Trendy efterårsbuket",225);
         buketter.add(buket1);
         buketter.add(buket2);
         int phone = 32324512;
+        int phone2 = 52324512;
         Ordre ordre = new Ordre(phone,buketter);
-        controller.visBestillinger();
+        buketter.add(buket3);
+        buketter.add(buket4);
+        Ordre ordre2 = new Ordre(phone,buketter);
+        ordre.setStatus("CREATED");
+        ordre2.setStatus("CREATED");
+        controller.writeOrderToFile(ordre);
+        controller.writeOrderToFile(ordre2);
+        ordre.setStatus("INPROGRES");
+        controller.writeOrderToFile(ordre);
     }
+
 }

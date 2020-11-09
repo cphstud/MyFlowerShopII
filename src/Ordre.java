@@ -15,7 +15,7 @@ public class Ordre {
         ldt = LocalDateTime.now();
         this.id = counter;
         counter++;
-        this.status = "OPRETTET";
+        this.status = "CREATED";
     }
 
     public int getId() {
@@ -38,11 +38,11 @@ public class Ordre {
         String retVal = "";
         retVal += id;
         retVal += ";" + phone;
-        retVal += ";@";
+        retVal += ";";
         for (Buket b : buketter) {
             retVal += "@" + b.getId();
         }
-        retVal += ";@";
+        retVal += "@";
         retVal += ";" + calcPrice();
         retVal += ";" + status;
         return retVal;

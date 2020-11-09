@@ -92,7 +92,7 @@ public class Controller {
         sc.nextLine();
         String conf = sc.nextLine();
         if (conf.toLowerCase().equals("ja")) {
-            ordre.setStatus("DOING");
+            ordre.setStatus("INPROGRES");
         } else {
             ordre.setStatus("CANCELED");
         }
@@ -150,28 +150,30 @@ public class Controller {
             try {
                 FileWriter fw = new FileWriter(file,true);
                 BufferedWriter bw = new BufferedWriter(fw);
+                ordre.setStatus("INPROGRES");
                 bw.write(ordre.printToCsv2());
                 bw.newLine();
-                ordre.setStatus("ACTIVE");
                 bw.close();
                 fw.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             //write to active-file
-        } else {
+        } else if (ordre.getStatus().equals("INPROGRES")){
             File file = new File("resources/archivedOrders.csv");
             try {
                 FileWriter fw = new FileWriter(file,true);
                 BufferedWriter bw = new BufferedWriter(fw);
+                ordre.setStatus("DONE");
                 bw.write(ordre.printToCsv2());
                 bw.newLine();
-                ordre.setStatus("DONE");
                 bw.close();
                 fw.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            System.out.println("ups");
         }
     }
 
