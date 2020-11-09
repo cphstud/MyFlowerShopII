@@ -32,11 +32,11 @@ public class Controller {
             switch(choice) {
                 case 1: visBuketter();break;
                 case 2: opretOrdre();break;
-                case 3: godkendOrdre();break;
-                case 4: retOrdre();break;
-                case 5: arkiverOrdre();break;
-                case 6: visBestillinger();break;
-                case 7: visStatistik();break;
+                //case 3: godkendOrdre();break;
+                case 3: retOrdre();break;
+                case 4: arkiverOrdre();break;
+                case 5: visBestillinger();break;
+                case 6: visStatistik();break;
                 default:exitProgram();
             }
         }
@@ -61,8 +61,9 @@ public class Controller {
         System.out.println("Hvilken ordre skal arkiveres?");
         int ordreId = sc.nextInt();
         Ordre ordre = getOrderById(ordreId);
-        ordre.setStatus("DONE");
         writeOrderToFile(ordre);
+        ordre.setStatus("DONE");
+        printMainAction();
     }
 
 
@@ -100,7 +101,7 @@ public class Controller {
         sc.nextLine();
         String conf = sc.nextLine();
         if (conf.toLowerCase().equals("ja")) {
-            ordre.setStatus("INPROGRES");
+            writeOrderToFile(ordre);
         } else {
             ordre.setStatus("CANCELED");
         }
@@ -114,54 +115,20 @@ public class Controller {
         for (Buket b:buketter ) {
             System.out.println(b.toString());
         }
+        printMainAction();
     }
 
     public void printMainAction() {
         System.out.println("1) vis buketter");
         System.out.println("2) opret ordre ");
-        System.out.println("3) godkend ordre");
-        System.out.println("4) ret ordre");
-        System.out.println("5) arkiver ordre");
-        System.out.println("6) vis alle bestillinger");
-        System.out.println("7) vis statistik");
+        System.out.println("3) ret ordre");
+        System.out.println("4) arkiver ordre");
+        System.out.println("5) vis alle bestillinger");
+        System.out.println("6) vis statistik");
         System.out.println("9) afslut programmet");
     }
 
     // Services
-
-    public void writeOrderToFile(Ordre ordre) {
-        ////0;212121;@3,Mix bundt med 7 stilke pastel hortensia,275@5,Arranger selv bundt,22513,Queen blomsterbuket,275@;775;DONE
-        if (ordre.getStatus().equals("CREATED")) {
-            File file = new File("resources/activeOrders.csv");
-            try {
-                FileWriter fw = new FileWriter(file,true);
-                BufferedWriter bw = new BufferedWriter(fw);
-                ordre.setStatus("INPROGRES");
-                bw.write(ordre.printToCsv2());
-                bw.newLine();
-                bw.close();
-                fw.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //write to active-file
-        } else if (ordre.getStatus().equals("INPROGRES")){
-            File file = new File("resources/archivedOrders.csv");
-            try {
-                FileWriter fw = new FileWriter(file,true);
-                BufferedWriter bw = new BufferedWriter(fw);
-                ordre.setStatus("DONE");
-                bw.write(ordre.printToCsv2());
-                bw.newLine();
-                bw.close();
-                fw.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("ups");
-        }
-    }
 
     public Buket getBuketById(int buketNr) {
         Buket retVal = null;

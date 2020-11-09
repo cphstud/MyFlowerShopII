@@ -1,3 +1,5 @@
+import domain.Buket;
+import domain.Ordre;
 import org.junit.Before;
 import org.junit.Test;
 
