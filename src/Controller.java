@@ -38,9 +38,30 @@ public class Controller {
         System.out.println("Farvel og tak");
     }
 
-    private void visStatistik() {
-
-
+    public void visStatistik() {
+        //0;32324512;@3@5@2@10@;1150;DONE
+        int[] statArr = new int[buketter.size()];
+        String line = "";
+        File file = new File("resources/archivedOrders.csv");
+        try {
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            while((line = br.readLine()) != null) {
+                String[] lineArr = line.split(";");
+                String buketLine = lineArr[2];
+                String[] buketLineArr = buketLine.split("@");
+                for(int i=1;i<buketLineArr.length;i++) {
+                    statArr[Integer.valueOf(buketLineArr[i])]++;
+                }
+            }
+            br.close();
+            fr.close();
+            for(int i=0;i<statArr.length;i++) {
+                System.out.print("|"+statArr[i]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void visBestillinger() {

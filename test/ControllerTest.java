@@ -70,4 +70,8 @@ public class ControllerTest {
         controller.writeOrderToFile(ordre);
     }
 
+    @Test
+    public void visStatistik() {
+        controller.visStatistik();
+    }
 }
