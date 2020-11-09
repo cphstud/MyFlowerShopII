@@ -10,6 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderServiceDSFile implements OrderServiceI{
+    private List<Ordre> bestillinger;
+
+    public OrderServiceDSFile() {
+        bestillinger = new ArrayList<>();
+    }
+
+    public void addOrderToBestillinger(Ordre ordre) {
+        bestillinger.add(ordre);
+    }
+
+    public List<Ordre> getBestillinger() {
+        return bestillinger;
+    }
 
     public void writeOrderToFile (Ordre ordre) {
         ////0;212121;@3,Mix bundt med 7 stilke pastel hortensia,275@5,Arranger selv bundt,22513,Queen blomsterbuket,275@;775;DONE
@@ -53,9 +66,16 @@ public class OrderServiceDSFile implements OrderServiceI{
         }
         return retVal;
 
+
+    }
+    public void arkiverOrdre(int id) {
+        Ordre order = null;
+        order = getOrderById(id);
+        this.writeOrderToFile(order);
+        order.setStatus("DONE");
     }
 
-    private List<Ordre> getOrdersByPhone(int phone) {
+    public List<Ordre> getOrdersByPhone(int phone) {
         List<Ordre> ordres = new ArrayList<>();
         for (Ordre o: bestillinger ) {
             if (o.getPhone() == phone && o.getStatus().equals("CREATED")) {

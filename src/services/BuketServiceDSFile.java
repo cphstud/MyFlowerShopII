@@ -38,4 +38,14 @@ public class BuketServiceDSFile implements BuketServiceI{
         return bukets;
     }
 
+    public Buket getBuketById(int id) {
+        Buket retVal = null;
+        for (Buket b:buketter ) {
+            if (b.getId()==id) {
+                return b;
+            }
+        }
+        return retVal;
+    }
+
 }

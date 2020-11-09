@@ -3,6 +3,7 @@ package entry;
 import domain.Buket;
 import domain.Ordre;
 import services.BuketServiceI;
+import services.OrderServiceI;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,15 +12,15 @@ import java.util.Scanner;
 
 public class Controller {
     // ha' adgang til nødvendige datastrukturer
-    List<Buket> buketter;
-    List<Ordre> bestillinger;
-    Scanner sc = new Scanner(System.in);
+    private Scanner sc = new Scanner(System.in);
+    private OrderServiceI orderServiceI;
+    private BuketServiceI buketServiceI;
 
-    Controller(BuketServiceI buketService) {
+    Controller(BuketServiceI buketService, OrderServiceI orderService) {
 
         //buketter = getAllFlowersFromDataStore();
-        this.buketter = buketService.getAllFlowersFromDataStore();
-        bestillinger = new ArrayList<>();
+        this.buketServiceI = buketService;
+        this.orderServiceI = orderService;
     }
 
     public void runProgram() {
@@ -47,12 +48,10 @@ public class Controller {
     }
 
     private void visStatistik() {
-
-
     }
 
     public void visBestillinger() {
-        for (Ordre o: bestillinger ) {
+        for (Ordre o: orderServiceI.getBestillinger() ) {
             System.out.println(o.printToCsv());
         }
     }
@@ -60,9 +59,7 @@ public class Controller {
     private void arkiverOrdre() {
         System.out.println("Hvilken ordre skal arkiveres?");
         int ordreId = sc.nextInt();
-        Ordre ordre = getOrderById(ordreId);
-        writeOrderToFile(ordre);
-        ordre.setStatus("DONE");
+        orderServiceI.arkiverOrdre(ordreId);
         printMainAction();
     }
 
@@ -70,7 +67,7 @@ public class Controller {
     private void retOrdre() {
         System.out.println("Hvilken kundes ordre?");
         int phone = sc.nextInt();
-        List<Ordre> ordres = getOrdersByPhone(phone);
+        List<Ordre> ordres = orderServiceI.getOrdersByPhone(phone);
         for (Ordre ordre:ordres ) {
             // TODO: ret evt buketter
         }
@@ -91,7 +88,7 @@ public class Controller {
             System.out.println("Vælg buket");
             buketNr = sc.nextInt();
             if (buketNr != 99) {
-                tmpBuket = getBuketById(buketNr);
+                tmpBuket = buketServiceI.getBuketById(buketNr);
                 buketter.add(tmpBuket);
             }
         }
@@ -101,18 +98,18 @@ public class Controller {
         sc.nextLine();
         String conf = sc.nextLine();
         if (conf.toLowerCase().equals("ja")) {
-            writeOrderToFile(ordre);
+            orderServiceI.writeOrderToFile(ordre);
         } else {
             ordre.setStatus("CANCELED");
         }
-        bestillinger.add(ordre);
+        orderServiceI.addOrderToBestillinger(ordre);
         // loop ind til buketter valgt
         printMainAction();
     }
 
 
     public void visBuketter() {
-        for (Buket b:buketter ) {
+        for (Buket b:buketServiceI.getAllFlowersFromDataStore() ) {
             System.out.println(b.toString());
         }
         printMainAction();
@@ -130,34 +127,4 @@ public class Controller {
 
     // Services
 
-    public Buket getBuketById(int buketNr) {
-        Buket retVal = null;
-        for (Buket b: buketter ) {
-            if (b.getId() == buketNr){
-                retVal = b;
-            }
-        }
-        return retVal;
-    }
-
-    public Ordre getOrderById(int ordreId) {
-        Ordre retVal = null;
-        for (Ordre o: bestillinger ) {
-            if (o.getId() == ordreId){
-                retVal = o;
-            }
-        }
-        return retVal;
-
-    }
-
-    private List<Ordre> getOrdersByPhone(int phone) {
-        List<Ordre> ordres = new ArrayList<>();
-        for (Ordre o: bestillinger ) {
-            if (o.getPhone() == phone && o.getStatus().equals("CREATED")) {
-                ordres.add(o);
-            }
-        }
-        return ordres;
-    }
 }
