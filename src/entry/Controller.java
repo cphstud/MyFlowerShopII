@@ -1,6 +1,8 @@
 package entry;
 
 import domain.Buket;
+import domain.OrderNotFoundException;
+import domain.OrderWrongStatusException;
 import domain.Ordre;
 import services.BuketServiceI;
 import services.OrderServiceI;
@@ -59,7 +61,12 @@ public class Controller {
     private void arkiverOrdre() {
         System.out.println("Hvilken ordre skal arkiveres?");
         int ordreId = sc.nextInt();
-        orderServiceI.arkiverOrdre(ordreId);
+        try {
+            orderServiceI.arkiverOrdre(ordreId);
+        } catch (OrderWrongStatusException | OrderNotFoundException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Du tastede nok forkert. Prøv igen");
+        }
         printMainAction();
     }
 
@@ -93,7 +100,12 @@ public class Controller {
         sc.nextLine();
         String conf = sc.nextLine();
         if (conf.toLowerCase().equals("ja")) {
-            orderServiceI.writeOrderToFile(ordre);
+            try {
+                orderServiceI.writeOrderToFile(ordre);
+            } catch (OrderWrongStatusException e) {
+                System.out.println(e.getMessage());
+                System.out.println("Din ordre havde forkert status");
+            }
         } else {
             ordre.setStatus("CANCELED");
         }

@@ -1,5 +1,7 @@
 package services;
 
+import domain.OrderNotFoundException;
+import domain.OrderWrongStatusException;
 import domain.Ordre;
 
 import java.io.*;
@@ -21,14 +23,12 @@ public class OrderServiceDSFile implements OrderServiceI{
         return bestillinger;
     }
 
-    public void writeOrderToFile (Ordre ordre) {
+    public void writeOrderToFile (Ordre ordre) throws OrderWrongStatusException {
         ////0;212121;@3,Mix bundt med 7 stilke pastel hortensia,275@5,Arranger selv bundt,22513,Queen blomsterbuket,275@;775;DONE
-        if (ordre.getStatus().equals("CREATED")) {
             File file = new File("resources/orders.csv");
             try {
                 FileWriter fw = new FileWriter(file,true);
                 BufferedWriter bw = new BufferedWriter(fw);
-                ordre.setStatus("INPROGRES");
                 bw.write(ordre.printToCsv2());
                 bw.newLine();
                 bw.close();
@@ -37,35 +37,29 @@ public class OrderServiceDSFile implements OrderServiceI{
                 e.printStackTrace();
             }
             //write to active-file
-        } else if (ordre.getStatus().equals("INPROGRES")){
-            File file = new File("resources/orders.csv");
-            try {
-                FileWriter fw = new FileWriter(file,true);
-                BufferedWriter bw = new BufferedWriter(fw);
-                ordre.setStatus("DONE");
-                bw.write(ordre.printToCsv2());
-                bw.newLine();
-                bw.close();
-                fw.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (ordre.getStatus().equals("CREATED")) {
+            ordre.setStatus("INPROGRES");
+        } else if (ordre.getStatus().equals("INPROGRES")) {
+            ordre.setStatus("DONE");
         } else {
-            System.out.println("ups");
+            throw new OrderWrongStatusException("Order " + ordre.getId() + " has wrong status " + ordre.getStatus());
         }
     }
-    public Ordre getOrderById(int ordreId) {
+    public Ordre getOrderById(int ordreId) throws OrderNotFoundException {
         Ordre retVal = null;
         for (Ordre o: bestillinger ) {
             if (o.getId() == ordreId){
                 retVal = o;
             }
         }
+        if (retVal == null) {
+            throw new OrderNotFoundException("order by id " + ordreId + " not found");
+        }
         return retVal;
 
 
     }
-    public void arkiverOrdre(int id) {
+    public void arkiverOrdre(int id) throws OrderNotFoundException, OrderWrongStatusException {
         Ordre order = null;
         order = getOrderById(id);
         this.writeOrderToFile(order);
